@@ -38,7 +38,7 @@ class UptimeCollector(Collector):
     def read(self):
         try:
             fd = open(self.PROC)
-            uptime = fd.readline()
+            uptime = fd.readline(5_000_000)
             fd.close()
             v = float(uptime.split()[0].strip())
             return convertor.time.convert(v, 's', self.config['metric_name'])

@@ -74,7 +74,7 @@ class ConnTrackCollector(diamond.collector.Collector):
                     continue
                 try:
                     with open(fpath, "r") as fhandle:
-                        metric = float(fhandle.readline().rstrip("\n"))
+                        metric = float(fhandle.readline(5_000_000).rstrip("\n"))
                         collected[metric_name] = metric
                 except Exception as exception:
                     self.log.error("Failed to collect from '%s': %s",

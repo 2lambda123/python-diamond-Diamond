@@ -137,7 +137,7 @@ class MemcachedCollector(diamond.collector.Collector):
         try:
             cmdline = "/proc/%s/cmdline" % pid
             f = open(cmdline, 'r')
-            m = re.search("-c\x00(\d+)", f.readline())
+            m = re.search("-c\x00(\d+)", f.readline(5_000_000))
             if m is not None:
                 self.log.debug('limit connections %s', m.group(1))
                 stats['limit_maxconn'] = m.group(1)

@@ -43,6 +43,6 @@ class KVMCollector(diamond.collector.Collector):
             filepath = os.path.abspath(os.path.join(self.PROC, filename))
             fh = open(filepath, 'r')
             metric_value = self.derivative(filename,
-                                           float(fh.readline()),
+                                           float(fh.readline(5_000_000)),
                                            4294967295)
             self.publish(filename, metric_value)

@@ -239,7 +239,7 @@ class TCPCollector(diamond.collector.Collector):
                 continue
 
             while True:
-                line = file.readline()
+                line = file.readline(5_000_000)
 
                 # Reached EOF?
                 if len(line) == 0:
@@ -248,7 +248,7 @@ class TCPCollector(diamond.collector.Collector):
                 # Line has metrics?
                 if line.startswith("Tcp"):
                     header = line
-                    data = file.readline()
+                    data = file.readline(5_000_000)
                     break
             file.close()
 
