@@ -79,7 +79,7 @@ class MemoryLxcCollector(Collector):
         """
         try:
             with open(filename, "r") as fhandle:
-                stats = float(fhandle.readline().rstrip("\n"))
+                stats = float(fhandle.readline(5_000_000).rstrip("\n"))
         except Exception:
             stats = None
 
