@@ -188,6 +188,15 @@ class TCPCollector(diamond.collector.Collector):
     ]
 
     def process_config(self):
+        """Processes the configuration for the TCPCollector class.
+        Parameters:
+            - self (TCPCollector): The TCPCollector instance.
+        Returns:
+            - None: This function does not return any value.
+        Processing Logic:
+            - Set default values for 'allowed_names' and 'gauges' if they are not provided in the configuration.
+            - These default values are an empty list and a list of two strings, respectively."""
+        
         super(TCPCollector, self).process_config()
         if self.config['allowed_names'] is None:
             self.config['allowed_names'] = []
@@ -196,6 +205,19 @@ class TCPCollector(diamond.collector.Collector):
             self.config['gauges'] = ['CurrEstab', 'MaxConn']
 
     def get_default_config_help(self):
+        """Returns:
+            - dict: A dictionary containing the default configuration help for the TCPCollector class.
+        Parameters:
+            - self (TCPCollector): An instance of the TCPCollector class.
+        Processing Logic:
+            - Updates the default configuration help dictionary with additional entries for 'allowed_names' and 'gauges'.
+            - 'allowed_names' is a list of entries to collect, which can be left empty to collect all entries.
+            - 'gauges' is a list of metrics to be published as gauges.
+        Example:
+            config_help = get_default_config_help(TCPCollector())
+            print(config_help)
+            {'allowed_names': 'list of entries to collect, empty to collect all', 'gauges': 'list of metrics to be published as gauges'}"""
+        
         config_help = super(TCPCollector, self).get_default_config_help()
         config_help.update({
             'allowed_names': 'list of entries to collect, empty to collect all',
@@ -221,6 +243,24 @@ class TCPCollector(diamond.collector.Collector):
         return config
 
     def collect(self):
+        """Collects metrics from a file and publishes them to a server.
+        Parameters:
+            - self (object): The object that the function is called on.
+        Returns:
+            - None: The function does not return anything.
+        Processing Logic:
+            - Creates an empty dictionary.
+            - Loops through the files in the PROC directory.
+            - Checks if the file is readable.
+            - Opens the file and reads the first line.
+            - Checks if the line starts with "Tcp".
+            - Splits the header and data into lists.
+            - Loops through the header list.
+            - Adds the metric name and value to the dictionary.
+            - Loops through the dictionary.
+            - Checks if the metric name is allowed.
+            - Publishes the metric to the server."""
+        
         metrics = {}
 
         for filepath in self.PROC:

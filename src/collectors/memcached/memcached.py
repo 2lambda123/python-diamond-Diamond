@@ -46,6 +46,8 @@ class MemcachedCollector(diamond.collector.Collector):
     ]
 
     def get_default_config_help(self):
+        """"""
+        
         config_help = super(MemcachedCollector, self).get_default_config_help()
         config_help.update({
             'publish':
@@ -78,6 +80,26 @@ class MemcachedCollector(diamond.collector.Collector):
         return config
 
     def get_raw_stats(self, host, port):
+        """Function to retrieve raw statistics from a given host and port.
+        Parameters:
+            - host (str): The hostname or IP address of the server to retrieve stats from.
+            - port (int): The port number to connect to, if applicable.
+        Returns:
+            - str: A string containing the raw statistics data.
+        Processing Logic:
+            - Establishes a socket connection to the given host and port.
+            - Sets a timeout of 3 seconds for the connection.
+            - Sends a 'stats' request to the server.
+            - Receives data in chunks and appends it to the 'data' variable.
+            - Breaks out of the loop when the 'END' marker is received.
+            - Catches any socket errors and logs them.
+            - Closes the socket connection.
+            - Returns the accumulated data as a string.
+        Example:
+            data = get_raw_stats('example.com', 8080)
+            print(data)
+            # Output: 'STAT cmd_get 0\r\nSTAT cmd_set 0\r\nEND\r\n'"""
+        
         data = ''
         # connect
         try:
@@ -110,6 +132,23 @@ class MemcachedCollector(diamond.collector.Collector):
         return data
 
     def get_stats(self, host, port):
+        """Returns stats dictionary containing parsed stats from memcached server.
+        Parameters:
+            - host (str): Host name or IP address of the memcached server.
+            - port (int): Port number of the memcached server.
+        Returns:
+            - stats (dict): Dictionary containing parsed stats from the memcached server.
+        Processing Logic:
+            - Ignore certain stats that are not relevant.
+            - Parse each line of data and extract relevant stats.
+            - Convert numerical values to appropriate data types.
+            - Get the maximum connection limit from the memcached server's command line options.
+            - Return the stats dictionary.
+        Example:
+            stats = get_stats('localhost', 11211)
+            print(stats)
+            # Output: {'bytes': 123456, 'curr_connections': 5, 'limit_maxconn': 1024, 'uptime': 3600}"""
+        
         # stuff that's always ignored, aren't 'stats'
         ignored = ('libevent', 'pointer_size', 'time', 'version',
                    'repcached_version', 'replication', 'accepting_conns',
@@ -148,6 +187,8 @@ class MemcachedCollector(diamond.collector.Collector):
         return stats
 
     def collect(self):
+        """"""
+        
         hosts = self.config.get('hosts')
 
         # Convert a string config value to be an array

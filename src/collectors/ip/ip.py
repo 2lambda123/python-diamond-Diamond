@@ -39,11 +39,31 @@ class IPCollector(diamond.collector.Collector):
     ]
 
     def process_config(self):
+        """"Processes the configuration settings for the IPCollector class and sets the allowed_names parameter if it is not already set."
+        Parameters:
+            - self (IPCollector): The IPCollector object.
+        Returns:
+            - None: The function does not return any value, but sets the allowed_names parameter in the configuration settings.
+        Processing Logic:
+            - Calls the process_config() function from the parent class.
+            - Checks if the allowed_names parameter is already set.
+            - If not, sets the allowed_names parameter to an empty list."""
+        
         super(IPCollector, self).process_config()
         if self.config['allowed_names'] is None:
             self.config['allowed_names'] = []
 
     def get_default_config_help(self):
+        """"Returns the default configuration help for the IPCollector class, including a list of allowed names to collect.
+        Parameters:
+            - self (IPCollector): An instance of the IPCollector class.
+        Returns:
+            - config_help (dict): A dictionary containing the default configuration help, including a list of allowed names to collect.
+        Processing Logic:
+            - Retrieves the default configuration help using the super() function.
+            - Updates the dictionary with a key 'allowed_names' and a value of 'list of entries to collect, empty to collect all'.
+            - Returns the updated dictionary as the config_help variable.""""
+        
         config_help = super(IPCollector, self).get_default_config_help()
         config_help.update({
             'allowed_names': 'list of entries to collect, empty to collect all'
@@ -63,6 +83,18 @@ class IPCollector(diamond.collector.Collector):
         return config
 
     def collect(self):
+        """This function collects metrics from a file and publishes them as either a gauge or a counter. It takes in two parameters, self and filepath. Self is a reference to the current instance of the class, while filepath is the path to the file containing the metrics. The function returns a dictionary of metrics with their corresponding values.
+        Processing Logic:
+        - Opens the file and checks for read permission.
+        - Seeks the file for lines starting with "Ip".
+        - If found, splits the header and data into separate variables.
+        - If no data is found, logs an error and continues to the next file.
+        - Zips up the keys and values of the metrics.
+        - Checks if the metric name is allowed based on the config.
+        - Publishes the metric as either a gauge or a counter.
+        Example:
+        collect(self, '/var/log/metrics.log')"""
+        
         metrics = {}
 
         for filepath in self.PROC:
