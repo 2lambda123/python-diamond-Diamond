@@ -18,6 +18,16 @@ class KVMCollector(diamond.collector.Collector):
     PROC = '/sys/kernel/debug/kvm'
 
     def get_default_config_help(self):
+        """"Returns the default configuration help for the KVMCollector class.
+        Parameters:
+            - self (KVMCollector): The KVMCollector object.
+        Returns:
+            - config_help (dict): A dictionary containing the default configuration help for the KVMCollector class.
+        Processing Logic:
+            - Retrieves the default configuration help from the superclass.
+            - Updates the configuration help with any additional information specific to the KVMCollector class.
+            - Returns the updated configuration help dictionary.""""
+        
         config_help = super(KVMCollector, self).get_default_config_help()
         config_help.update({
         })
@@ -34,6 +44,18 @@ class KVMCollector(diamond.collector.Collector):
         return config
 
     def collect(self):
+        """Collects data from /sys/kernel/debug/kvm and publishes it as metrics.
+        Parameters:
+            - self (object): Instance of the class.
+        Returns:
+            - None: Does not return any value.
+        Processing Logic:
+            - Check if /sys/kernel/debug/kvm exists.
+            - Open each file in /sys/kernel/debug/kvm.
+            - Read the first line of the file.
+            - Calculate the derivative of the value.
+            - Publish the metric with the filename and derivative value."""
+        
         if not os.path.isdir(self.PROC):
             self.log.error('/sys/kernel/debug/kvm is missing. Did you' +
                            ' "mount -t debugfs debugfs /sys/kernel/debug"?')
